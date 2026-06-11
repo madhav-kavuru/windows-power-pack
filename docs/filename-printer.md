@@ -9,7 +9,7 @@ This proposal describes a Windows printing utility named **Filename Printer** th
 When users print multiple versions of the same document, it becomes difficult to match physical copies to their source files without reading each one in detail. This challenge multiplies when:
 
 - Versions differ only in small details (scattered changes or late-stage edits).
-- Multiple files exist with similar names, for example `Operating_Agreement_v7_clean.docx` and `Operating_Agreement_v7_marked.docx`.
+- Multiple files exist with similar names, for example `Operating_Agreement_v7_clean.docx`, `Operating_Agreement_v7_marked.docx`.
 - Printed copies must be kept for internal review versus external submission, but the physical documents are indistinguishable.
 
 Current workarounds are fragmented and awkward:
@@ -55,6 +55,12 @@ When a printer name contains blocked terms such as "PDF," "Fax," "OneNote," or "
 This rule must apply to printer names only, not document filenames. For example, a file named `Fax-from-Client-2024-12-23.pdf` should still be eligible for filename stamping when sent to a physical printer.
 
 The utility uses the XPS print pipeline internally; this is independent of whether the Microsoft XPS Document Writer printer is installed or visible, and XPS-named printers are simply treated as blocked destinations for filename-page insertion.
+
+## Filename Printer Settings Dialog
+
+The Filename Printer settings dialog includes a global **Print filename page** toggle that turns the feature on or off for the current print job, while the other choices remain available as persistent preferences based on the most recently used settings shown in the dialog image.
+
+Settings such as **Filename**, **Path**, **First page**, **Last page**, **Portrait**, and **Landscape** persist even when the global toggle is turned off, so disabling the feature does not reset the user's prior configuration. The next time the user wants to print a filename page, they can either keep those remembered settings as-is or modify them before printing.
 
 ## Real-World Use Cases
 
@@ -111,7 +117,7 @@ This architecture keeps the original document content unmodified, scopes the beh
 
 The utility maintains a configurable blocklist for printer names:
 
-- **Default blocklist:** `PDF`, `Fax`, `OneNote`, `XPS`
+- **Default blocklist:** "PDF", "Fax", "OneNote", "XPS"
 - **Detection rule:** Case-insensitive substring match against the printer queue name, not the document filename.
 - **Behavior:** When a blocked printer is detected, the filename/path toggles are disabled and forced to Off.
 - **Event handling:** If the user attempts to enable the toggle while a blocked printer is selected, it immediately reverts to Off.
@@ -121,18 +127,18 @@ The utility maintains a configurable blocklist for printer names:
 
 ### Page Layout
 
-In the table below, “First page” and “Last page” refer to the physical sheet where the filename page is printed, used as a leading or trailing page at print time. Filename and path are placed at fixed device-independent coordinates, adjusted for page orientation and size.
+In the table below, "First page" and "Last page" refer to the physical sheet where the filename page is printed, used as a leading or trailing page at print time. Filename and path begin at fixed device-independent coordinates, adjusted for page orientation and size.
 
-| Page | Orientation | Item | Distance from top | Distance from left |
-|---|---|---|---|---|
-| First page | Portrait | Filename | 3 cm | 3 cm |
-| First page | Portrait | Path | 6 cm | 3 cm |
-| First page | Landscape | Filename | 3 cm | 3 cm |
-| First page | Landscape | Path | 6 cm | 3 cm |
-| Last page | Portrait | Filename | 22 cm | 3 cm |
-| Last page | Portrait | Path | 26 cm | 3 cm |
-| Last page | Landscape | Filename | 14 cm | 3 cm |
-| Last page | Landscape | Path | 17 cm | 3 cm |
+| Page | Orientation | Item | Distance from top | Distance from left | Right margin |
+|---|---|---|---|---|---|
+| First page | Portrait | Filename | 3 cm | 3 cm | 2 cm |
+| First page | Portrait | Path | 6 cm | 3 cm | 2 cm |
+| First page | Landscape | Filename | 3 cm | 3 cm | 2 cm |
+| First page | Landscape | Path | 6 cm | 3 cm | 2 cm |
+| Last page | Portrait | Filename | 22 cm | 3 cm | 2 cm |
+| Last page | Portrait | Path | 26 cm | 3 cm | 2 cm |
+| Last page | Landscape | Filename | 14 cm | 3 cm | 2 cm |
+| Last page | Landscape | Path | 17 cm | 3 cm | 2 cm |
 
 Text is always rendered at least 12 pt for legibility. A settings UI allows users to customize font size within 12–20 pt bounds.
 
@@ -140,7 +146,7 @@ Text is always rendered at least 12 pt for legibility. A settings UI allows user
 
 **Primary rule:** Filenames of 100 characters or fewer are rendered in full. Longer filenames are truncated as follows: **first 90 characters** + ellipsis (`…`) + **last 10 characters**.
 
-**Wrapping fallback:** If space is tight, filenames can wrap to multiple lines within 3 cm left-margin and 1 cm right-margin boundaries.
+**Wrapping fallback:** If space is tight, filenames can wrap to multiple lines within 3 cm left-margin and 2 cm right-margin boundaries.
 
 If no usable filename is available, the utility does not insert a filename page for that job.
 
@@ -178,7 +184,7 @@ Filenames may contain accented characters, emoji, CJK scripts, Devanagari, and o
 - Document content, pagination, and headers/footers are completely unmodified.
 - Long filenames and non-ASCII characters render cleanly or degrade gracefully.
 
-### Localization Readiness for Other Languages
+## Localization Readiness for Other Languages
 
 Version 1 of the Filename Printing App is proposed for English (en-US) only, but the architecture deliberately prepares for additional languages. This utility is designed from the outset to support future language versions such as Spanish, Portuguese, Hindi, Russian, Japanese, German, French, Korean, Simplified Chinese, and Traditional Chinese without changing the core print pipeline.
 
@@ -188,7 +194,7 @@ Version 1 of the Filename Printing App is proposed for English (en-US) only, but
 
 ## Mockups
 
-![Filename Printer options mockup](../images/filename-printer-options-mockup.png)
+![Filename Printer settings mockup](../images/filename-printer-settings-mockup.png)
 
 ![Portrait sample page](../images/portrait-first-page-mockup.png)
 
