@@ -188,7 +188,7 @@ Version 1 of the Filename Printing App is proposed for English (en-US) only, but
 
 ## Mockups
 
-![Filename Printer options dialog](../images/filename-printer-options-mockup.png)
+![Filename Printer options mockup](../images/filename-printer-options-mockup.png)
 
 ![Portrait sample page](../images/portrait-first-page-mockup.png)
 
