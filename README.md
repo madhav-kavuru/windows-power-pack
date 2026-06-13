@@ -5,6 +5,12 @@ This document is a concise summary; links under each utility point to full techn
 
 This pack proposes five focused utilities that smooth common Windows workflows without changing how users fundamentally work. Each idea is small in scope but aimed at high-friction, high-frequency pain points professionals hit every day.
 
+## Community survey
+
+A quick survey is now open for the Windows Power Pack. Please select all proposed utilities you would personally use or support.
+
+👉 [Take the survey](https://forms.gle/6mZJQRR3UrdAxUM16)
+
 ## Utilities
 
 ### 1. Safe Drop Area for Windows File Explorer
@@ -36,4 +42,14 @@ Full spec and mockups: [Filename Printer details](docs/filename-printer.md)
 A small enhancement to Mouse Properties that automatically shows the existing pointer-location animation after a user-configurable idle period, making it easier to find the pointer when returning to the PC.
 
 Full spec and mockups: [Automatic Pointer Location After Idle details](docs/automatic-pointer-locator-after-idle.md)
+
+## Time and cost estimates
+
+For reviewers who care about implementation feasibility, here is a brief traditional-software time and cost estimate for building all five utilities with separate dedicated teams.
+
+[View the time and cost estimates](./docs/time-and-cost-estimates.md)
+
+## Purpose
+
+The goal of Windows Power Pack is to show that modest, well-targeted utilities can deliver meaningful everyday improvements for Windows users. Rather than changing how people fundamentally work, these proposals aim to make common tasks safer, clearer, and less frustrating, while remaining realistic to design, build, and maintain.
 ```
