@@ -22,3 +22,5 @@ Because all five teams run in parallel:
 This is a maximally parallel, highest-spend option, rather than the lower-cost alternative of using shared teams. It also assumes US-style fully loaded costs. Even with contingencies and overruns, the total is unlikely to exceed $4 million.
 
 As can be seen, all 5 utilities in the Power Pack can be developed to a polished, ready-for-widespread-distribution quality level in less than a year for less than $4 million. Compared to the billions of dollars Microsoft is pouring into AI with uncertain ROI, this is an insignificant amount of money that can create tangible, long-lasting user benefits and incremental revenues through increased subscriptions to Microsoft 365 that far exceed the cost.
+
+[← Back to summary](../README.md)
