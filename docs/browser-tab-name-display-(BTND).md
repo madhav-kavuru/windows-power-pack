@@ -1,80 +1,108 @@
-# Browser Tab Name Display (BTND)
+# PowerToys Proposal: Browser Tab Name Display (BTND)
 
-Browser Tab Name Display (BTND) is a proposed PowerToys utility for Windows 11 that displays the title of the currently active browser tab in a compact, taskbar-adjacent strip so that it remains readable even when tab captions become too small to be useful. This initial proposal is limited to Google Chrome, Mozilla Firefox, and Microsoft Edge.
+Browser Tab Name Display (BTND) is a proposed PowerToys utility for Windows 11 that displays the title of the currently active tab or document in a compact, taskbar-adjacent strip so that it remains readable even when tab captions become too small to be useful. Although browsers are an obvious use case, tabbed PDF viewers, Adobe Acrobat Reader, Office Tabs for Microsoft Office, and development tools such as Visual Studio Code also support tab navigation through the same common shortcut family, making them viable targets for the same utility model.
 
 ## Overview
 
-BTND is intended to be universal at the platform level in how it detects the active foreground window, but in practical day-to-day use it is focused on maximized browser workflows where many tabs are open in a single visible window. The first implementation should rely on standard Windows APIs to read the title of the current foreground window so that the utility remains lightweight, broadly compatible, and appropriately scoped for PowerToys.
+BTND should be designed as a Windows-level productivity utility for tabbed applications broadly, not just as a browser helper. At the platform level, it would detect the active foreground window, attempt to read the visible caption or title associated with the currently open tab in that window when available, and show that text in a small taskbar-adjacent strip when the feature is active.
 
-BTND combines two core functions: it displays the active tab title in a readable taskbar-adjacent strip, and it provides left and right arrow controls in that same taskbar area so the user can step through tabs while immediately seeing the title of the newly active tab. The utility is therefore not just a passive display mechanism; it is a taskbar-based tab identification and navigation tool.
+BTND combines two closely related functions. First, it exposes the current tab or document title in a larger, easier-to-read strip near the taskbar. Second, it provides left and right arrow controls in that same area so the user can step through tabs or tab-like documents from the taskbar itself. Even in applications where a clean per-tab title cannot always be resolved, the stepping function should still remain useful as a general-purpose tab-navigation aid.
 
 ## Problem
 
-When many tabs are open in a browser, the visible text on those tabs becomes too small to read comfortably, and the user may know only roughly where the desired tab is located. This creates both a readability problem and a selection problem, because aiming at tiny tab headers also increases the chance of accidentally clicking a nearby close button or the wrong tab.
+When many tabs or tabbed documents are open, the visible captions often become too small to read comfortably, and the user may know only roughly where the desired tab is located. This creates both a readability problem and a precision problem, because aiming at tiny tab headers increases the chance of selecting the wrong item or clicking a close button by mistake.
 
-Existing shortcuts such as Ctrl+Tab, Ctrl+Shift+Tab, Ctrl+PageDown, and Ctrl+PageUp can move between tabs, but they do not solve the identification problem because they switch focus directly into tab content rather than presenting a stable readable label first. For example, a user with 40 tabs open in Edge could use BTND's taskbar arrows to step through tabs while reading each full tab title as it becomes active, instead of hunting for tiny compressed tab labels.
+That problem appears across multiple application families, not just browsers. Acrobat Reader supports moving to the next and previous open document tab with Ctrl+Tab and Ctrl+Shift+Tab, Office Tabs documents the same pattern for moving through tabs, and Visual Studio Code also supports these shortcuts or equivalent remappings alongside Ctrl+PageUp and Ctrl+PageDown navigation patterns.
 
 ## Proposed behavior
 
-BTND would present a small collapsible title strip immediately above the Windows taskbar near the Start area instead of using a floating overlay that must be manually positioned. The strip would occupy a narrow reserved area, approximately 2 inches wide and about 0.4 inches high, with the right edge of that area aligned with the left edge of the Windows Start icon, and the displayed title would wrap into two lines in a tooltip-like font style for readability.
+BTND would present a small collapsible title strip immediately above the Windows taskbar near the Start area instead of using a floating overlay that must be manually positioned. The strip would occupy a narrow reserved area, approximately 2 inches wide and about 0.4 inches high, with the right edge aligned near the left edge of the Windows Start icon, and the displayed title would wrap into two lines in a tooltip-like font style for readability.
 
-The strip should be non-obscuring by design and should appear only in reserved or safe space so that it never covers important desktop content, shell information, application status bars, or specialized software interface elements. The expand/collapse control should appear in the taskbar near the Start button, with left and right arrow controls beside it as a core part of the BTND interface for tab stepping.
+The strip should appear only in reserved or safe space so that it never obscures important desktop content, shell information, application status bars, or specialized software UI. The expand/collapse control should remain in the taskbar area, and left/right arrows should be a permanent part of the interface because navigation is central to the concept, not an optional extra.
 
 ## Activation and reset
 
-BTND should work only when a supported browser window is maximized and is the foreground window currently visible to the user. When the user clicks the up arrow, the feature turns on for that active window, but the strip initially appears as a blank or inactive shaded strip until the user initializes it by clicking a tab in that same window.
+BTND should work only when a supported tabbed application window is maximized and is the foreground window currently visible to the user. When the user clicks the up arrow, the feature turns on for that active window and initializes the strip by displaying the current tab or document title when available. Subsequent tab changes within that same window should update the displayed title automatically when a new usable title can be obtained.
 
-After that initialization click, the title of the selected tab should appear in the strip, and subsequent tab changes within that same window should update the displayed title. The feature should automatically deactivate whenever the user minimizes the window, restores it to a non-maximized size, or switches focus to another supported browser window, at which point the user must reinitialize the feature for the newly focused window if they want BTND active there.
+The feature should automatically deactivate, and the down arrow should revert to an up arrow, whenever the user minimizes the window, restores it to a non-maximized size, or switches focus to another supported tabbed application window. The user must reinitialize the feature by clicking the up arrow for any newly focused maximized window if they want BTND active there. If the user clicks the up arrow in a non-maximized window, the strip should not appear and the feature should remain inactive.
 
-## Visibility rules
+### Expected user mental model
 
-Visibility follows the activation rules described above: only the current maximized foreground supported browser window can show a title in the strip. If the active window is resized, restored, minimized, or otherwise no longer the visible foreground maximized window, the title strip should remain hidden or inactive.
+- Maximize a supported tabbed application window.
+- Click the up arrow to activate BTND for that window and show the current title.
+- Change tabs and watch the strip update automatically.
+- If the window is no longer maximized or is no longer the foreground window, BTND turns off and must be activated again.
 
-In a desktop containing a mix of maximized and resized windows, the strip should respond only to the window currently in front, and a maximized window behind another foreground window must not cause any title to be shown. This keeps the behavior aligned with the intended active-session workflow inside one visible browser window at a time.
+## Title display and movement
+
+BTND should treat title display and tab movement as related but separable behaviors. If the application exposes a usable foreground caption or document title, BTND should display that title in the strip. If the application does not expose a clean tab name through normal Windows mechanisms, BTND should still allow the user to move backward or forward through tabs with the taskbar arrows.
+
+This distinction matters because shortcut support is broader and more uniform than title exposure. Acrobat Reader documents next and previous open document tab shortcuts directly, Office Tabs documents next and previous tab movement, and VS Code supports tab switching through Ctrl+Tab and Ctrl+Shift+Tab behavior or configurable equivalents, even though exact traversal order can vary by application settings.
 
 ## Tab stepping
 
-A core part of BTND is the ability to move left and right through tabs from the taskbar while reading each active tab title in the strip. Once the feature has been initialized for the current window, the user should be able to move left or right from tab to tab by using the taskbar arrows, with the name of the newly selected tab displayed in the strip after each move.
+A core part of BTND is the ability to move left and right through tabs from the taskbar while reading each active tab or document title in the strip whenever title information is available. Once the feature has been initialized for the current window, the present tab name should be displayed and the user should be able to move left or right from tab to tab using the taskbar arrows, with the newly active title shown after each move when a title can be tracked.
 
-This feature is not meant merely to duplicate existing keyboard shortcuts. Avoiding awkward shortcut combinations is part of the benefit, but the main benefit is that the user can step through tabs while seeing each newly active tab name immediately displayed in the BTND strip, creating a more precise and readable tab-browsing workflow and reducing the need to aim repeatedly at very small tab headers.
+The left and right arrow icons should always be present in the interface. When the user clicks the left arrow, the utility should first attempt Ctrl+Shift+Tab, and when the user clicks the right arrow, it should first attempt Ctrl+Tab; if the tracked title remains unchanged after approximately 200 ms, the utility should then fall back to Ctrl+PageUp for left movement or Ctrl+PageDown for right movement. This ordering matches common next/previous tab behavior in the most popular browsers, Acrobat Reader, and Office Tabs while still leaving room for applications that respond more predictably to PageUp/PageDown tab commands.
 
-The left and right arrow icons should always be present in the interface. When the user clicks the left arrow, the utility should first attempt Ctrl+PageUp, and when the user clicks the right arrow, it should first attempt Ctrl+PageDown; if the tracked title remains unchanged after approximately 200 ms, the utility should then fall back to Ctrl+Shift+Tab for left movement or Ctrl+Tab for right movement.
+BTND should describe this operationally rather than promising identical adjacency semantics in every application. In some tools, especially editors like VS Code, Ctrl+Tab and Ctrl+Shift+Tab may operate in recently used order unless remapped, while Ctrl+PageUp and Ctrl+PageDown may correspond more closely to physical tab order.
 
-## Supported tab-stepping scope
+## Application scope
 
-To keep implementation cost and maintenance burden proportionate to user benefit, the left/right tab-stepping feature should initially be limited to Google Chrome, Microsoft Edge, and Mozilla Firefox. These three browsers represent the most important and most stable use cases for the feature, align most closely with the proposal's core high-tab workflow, and provide the largest practical share of the utility's value.
+BTND should target the most common tabbed Windows workflows, including:
 
-Restricting early support to these browsers would reduce the need for application-specific exception handling, compatibility testing, and ongoing maintenance across a wider range of less consistent tabbed applications. It would also make the feature easier to explain, validate, and support within PowerToys.
+- Web browsers.
+- PDF and document viewers with tabs, including Acrobat Reader-style interfaces.
+- Office environments that use Office Tabs to place many documents into one tabbed window.
+- Editors and development tools such as Visual Studio Code, where open files already live in a tabbed model.
 
-## Target applications
+This scope gives the proposal a stronger Windows-wide productivity case. The same compact taskbar strip and arrow-based movement can help users navigate crowded tab strips across reading, editing, browsing, and document-review workflows.
 
-The primary and only in-scope targets for this initial proposal are Google Chrome, Mozilla Firefox, and Microsoft Edge. Tabbed PDF viewers, XPS-style viewers, Adobe Acrobat, Acrobat Reader, Microsoft Office applications, and other tab-oriented desktop applications are out of scope for this proposal.
+## Compatibility model
+
+A practical compatibility model for BTND is:
+
+| Application family | Common next-tab behavior | Common previous-tab behavior | BTND value |
+|---|---|---|---|
+| Browsers | Ctrl+Tab or Ctrl+PageDown | Ctrl+Shift+Tab or Ctrl+PageUp | Readable title display plus navigation. |
+| Acrobat Reader and similar tabbed PDF viewers | Ctrl+Tab | Ctrl+Shift+Tab | Strong match for document-tab movement. |
+| Office Tabs for Microsoft Office | Tab movement documented with Ctrl+Tab family and previous-tab movement with Ctrl+Shift+Tab. | Ctrl+Shift+Tab. | Strong match for document workflows. |
+| VS Code and similar editors | Ctrl+Tab or Ctrl+PageDown, depending on configuration and command binding. | Ctrl+Shift+Tab or Ctrl+PageUp, depending on configuration and command binding. | Useful even when traversal order is history-based. |
+
+The key design point is that BTND does not need identical application internals to be valuable. It only needs a reliable way to detect the active foreground window, attempt to surface a title when possible, and send the most widely supported tab-navigation shortcuts in a sensible order.
 
 ## Technical approach
 
-The preferred first implementation is a lightweight native Windows desktop utility using the Win32 API, built for x64 and ARM64 Windows 11 systems, that detects the active foreground window, reads its caption text, determines whether that window is maximized, and displays the title in a passive taskbar-adjacent surface.
+The preferred first implementation is a lightweight native Windows desktop utility using standard Win32 APIs on Windows 11 x64 and ARM64. A first prototype can detect the active foreground window, read its caption text, determine whether that window is maximized, and display the resulting text in a passive taskbar-adjacent surface using foreground-window tracking, caption reading, timer-driven updates, taskbar-aware positioning, and non-activating popup behavior.
 
-Recommended first-prototype choices include:
-
-- Window tracking via `GetForegroundWindow`, `GetWindowTextW`, and `IsZoomed`.
-- Overlay display via a small custom-drawn Win32 popup using `WM_PAINT` and `DrawTextW`.
-- A 200 ms timer-driven update loop.
-- Taskbar-aware positioning using `SHAppBarMessage(ABM_GETTASKBARPOS)`.
-- Non-activating behavior using styles such as `WS_EX_NOACTIVATE`.
+The implementation should separate the title layer from the navigation layer. The title layer is opportunistic and display-oriented: it shows the best usable foreground caption BTND can retrieve. The navigation layer is shortcut-driven: it continues to send left/right tab commands even when title extraction is incomplete or inconsistent in a given application.
 
 ## Staged implementation
 
-- **Stage 1:** Foreground window caption display and left/right tab stepping for the active maximized supported browser window, with explicit user activation and per-window initialization behavior.
-- **Stage 2:** Application-aware shortcut refinement where supported browser behavior benefits from browser-specific routing.
-- **Stage 3:** Optional browser-specific title integration only if ordinary browser titles prove insufficient.
+A practical staged plan would be:
+
+- **Stage 1:** Foreground-window caption display in the three most popular web browsers, plus universal tab stepping for active maximized tabbed applications using Ctrl+Shift+Tab and Ctrl+Tab first, then Ctrl+PageUp and Ctrl+PageDown as fallback.
+- **Stage 2:** Reliability improvements for title capture across more tabbed application families, including PDF/document viewers, Office tab shells, and editors.
+- **Stage 3:** Optional application-aware refinements for apps whose traversal behavior differs meaningfully, such as history-ordered tab switching in editors.
+
+This staging keeps the first version useful across many real-world workflows while leaving room for later refinement where application-specific behavior warrants it.
 
 ## Estimated implementation effort
 
-As currently scoped, BTND appears to be a modest but non-trivial PowerToys utility rather than a very small feature. A realistic estimate for a credible first implementation is roughly 300 to 450 hours of engineering work, or about 6 to 12 developer-weeks, assuming the proposal includes both the taskbar-adjacent title strip and the required left/right tab-stepping behavior for Chrome, Firefox, and Edge.
+A realistic estimate for a solid first implementation is about 300 to 450 hours of engineering work, or roughly 6 to 12 developer-weeks, depending on how much cross-application testing and polish is included. A narrower proof of concept could be built more quickly, but a credible utility that works reliably across browsers, tabbed PDF viewers, Office Tabs, and editors would require more validation and refinement.
+
+In cost terms, a practical first version would likely fall in the range of about $30,000 to $65,000 if developed externally, with lower costs possible for a prototype and higher costs likely for a more polished cross-application release. The main effort is not drawing the taskbar-adjacent strip itself, but making activation, title capture, fallback shortcut behavior, and application compatibility feel dependable in everyday use.
 
 ## Why PowerToys fits
 
-BTND fits PowerToys because it is a lightweight productivity enhancement for Windows users rather than a change to any single application. It also aligns with the PowerToys pattern of providing practical shell-adjacent utilities that improve workflow without unsupported modifications to the Windows shell itself.
+BTND fits PowerToys because it is a lightweight Windows productivity enhancement rather than a change to any one application. PowerToys is strongest when it offers practical shell-adjacent utilities that improve many everyday workflows without requiring unsupported shell modifications or deep invasive integrations.
+
+A utility that shows readable tab or document titles when possible and still provides practical backward/forward tab movement when titles are not available is well aligned with that mission. Because common tab-navigation shortcuts already appear across browsers, document viewers, Office tab environments, and editors, BTND has a stronger cross-application rationale than a browser-only framing would suggest.
+
+## Request
+
+BTND can be considered as a new PowerToys utility or experimental prototype concept for Windows 11. The strongest value case is for users who work with many tabs or tabbed documents in a single maximized window and want a safer, easier way to identify and move through them from the taskbar without relying solely on tiny tab headers or awkward direct pointer targeting.
+
 
 ## Mockup
 
