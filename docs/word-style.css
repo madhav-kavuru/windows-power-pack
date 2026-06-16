@@ -1,0 +1,237 @@
+/* Word-like document styling for GitHub Pages */
+
+:root {
+  --page-width: 8.5in;
+  --page-max-width: 900px;
+  --page-padding-y: 0.75in;
+  --page-padding-x: 0.9in;
+
+  --bg: #ece9e3;
+  --paper: #ffffff;
+  --text: #222222;
+  --muted: #555555;
+  --rule: #d8d2c8;
+  --link: #1a5fb4;
+  --link-visited: #5a3696;
+}
+
+html {
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 32px 16px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+/* Main content wrapper: add class="doc-page" to your main container */
+.doc-page {
+  max-width: min(var(--page-width), var(--page-max-width));
+  margin: 0 auto;
+  padding: var(--page-padding-y) var(--page-padding-x);
+  background: var(--paper);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
+  border: 1px solid var(--rule);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Georgia", "Times New Roman", Times, serif;
+  color: var(--text);
+  line-height: 1.25;
+  margin-top: 1.5em;
+  margin-bottom: 0.55em;
+  font-weight: 700;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-top: 0;
+  padding-bottom: 0.35em;
+  border-bottom: 1px solid var(--rule);
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+}
+
+p, li, blockquote, td, th {
+  font-size: 1rem;
+}
+
+p, ul, ol, table, blockquote {
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+p, li {
+  max-width: 75ch;
+}
+
+ul, ol {
+  padding-left: 1.4em;
+}
+
+li + li {
+  margin-top: 0.35em;
+}
+
+/* Links */
+a {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+a:visited {
+  color: var(--link-visited);
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Images and figures */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1em auto;
+}
+
+figure {
+  margin: 1.25em 0;
+}
+
+figcaption {
+  color: var(--muted);
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25em 0;
+  font-size: 0.98rem;
+}
+
+th, td {
+  border: 1px solid var(--rule);
+  padding: 0.55em 0.7em;
+  vertical-align: top;
+}
+
+th {
+  background: #f7f4ef;
+  text-align: left;
+}
+
+/* Quotes and code */
+blockquote {
+  margin-left: 0;
+  padding: 0.75em 1em;
+  border-left: 4px solid #c8c1b6;
+  background: #faf8f4;
+  color: #333;
+}
+
+pre, code {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.95em;
+}
+
+pre {
+  overflow-x: auto;
+  padding: 0.9em 1em;
+  background: #f7f4ef;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+}
+
+/* Horizontal rules */
+hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 2em 0;
+}
+
+/* Utility classes */
+.back-link,
+.nav,
+.site-nav,
+.menu,
+.header-nav,
+.footer-nav {
+  font-size: 0.95rem;
+}
+
+/* Mobile adjustments */
+@media (max-width: 700px) {
+  body {
+    padding: 12px;
+    font-size: 17px;
+  }
+
+  .doc-page {
+    padding: 22px 18px;
+    box-shadow: none;
+    border: 1px solid var(--rule);
+  }
+
+  h1 {
+    font-size: 1.7rem;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+}
+
+/* Print styling */
+@media print {
+  @page {
+    size: auto;
+    margin: 0.7in;
+  }
+
+  body {
+    background: #ffffff;
+    padding: 0;
+    font-size: 12pt;
+    color: #000;
+  }
+
+  .doc-page {
+    max-width: none;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    border: none;
+  }
+
+  a {
+    color: #000;
+    text-decoration: none;
+  }
+
+  .nav,
+  .site-nav,
+  .menu,
+  .header-nav,
+  .footer-nav {
+    display: none;
+  }
+}
